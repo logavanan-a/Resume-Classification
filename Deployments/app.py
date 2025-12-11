@@ -11,6 +11,8 @@ import pandas as pd
 
 model = pk.load(open(r'model_xgb.pkl', 'rb'))
 Vectorizer = pk.load(open(r'vector.pkl', 'rb'))
+encoder = pk.load(open(r'label_encoder.pkl', 'rb'))
+
 stop_words = set(stopwords.words('english'))
 
 def preprocess(sentence):
@@ -45,9 +47,9 @@ st.markdown('<style>h1{color: Purple;}</style>', unsafe_allow_html=True)
 st.subheader('Welcome to Resume Classification App')
 uploaded_files = st.file_uploader('Upload Your Resumes', type= ['docx','pdf'],accept_multiple_files=True)
 
-select = ['PeopleSoft','SQL Developer','React JS Developer','Workday']
-st.subheader('Select as per Requirement')
-option = st.selectbox('Fields',select)
+# select = ['PeopleSoft','SQL Developer','React JS Developer','Workday']
+# st.subheader('Select as per Requirement')
+# option = st.selectbox('Fields',select)
 
 
 if st.button("Predict for All Files"):
@@ -70,10 +72,10 @@ if st.button("Predict for All Files"):
             vectorized = Vectorizer.transform([cleaned])
 
             prediction = model.predict(vectorized)[0]
-        
+            category = encoder.inverse_transform([prediction])[0]
             results.append({
                 "File Name": file_name,
-                "Predicted Category": prediction,
+                "Predicted Category": category,
             })
 
         if len(results) > 0:
@@ -85,5 +87,4 @@ if st.button("Predict for All Files"):
                 file_name="extracted_skills.csv",
                 mime="text/csv"
             )
-            # category = encoder.inverse_transform([prediction])[0]
 
