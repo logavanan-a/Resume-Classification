@@ -73,9 +73,12 @@ if st.button("Predict for All Files"):
 
             prediction = model.predict(vectorized)[0]
             category = encoder.inverse_transform([prediction])[0]
+            selection_status = "Selected" if prediction == 1 else "Not Selected"
+
             results.append({
                 "File Name": file_name,
                 "Predicted Category": category,
+                "Resume Status": selection_status 
             })
 
         if len(results) > 0:
